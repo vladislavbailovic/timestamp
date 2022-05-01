@@ -10,10 +10,25 @@ import (
 
 const yearDiffCutoff = 1000
 
+var GitCommitHash string = "development"
+var BuildDate string = "right now"
+
+func getVersion() string {
+	return strings.Join([]string{
+		fmt.Sprintf("Version:    %s", GitCommitHash),
+		fmt.Sprintf("Build date: %s", BuildDate),
+	}, "\n")
+}
+
 func main() {
-	tsRaw, useTime, useTz, showHelp := getParsedArgs()
+	tsRaw, useTime, useTz, showHelp, showVersion := getParsedArgs()
 	if showHelp {
 		fmt.Println(getHelp())
+		os.Exit(0)
+	}
+
+	if showVersion {
+		fmt.Println(getVersion())
 		os.Exit(0)
 	}
 
@@ -36,8 +51,9 @@ func main() {
 	fmt.Println(ts.Format(format))
 }
 
-func getParsedArgs() (string, bool, bool, bool) {
+func getParsedArgs() (string, bool, bool, bool, bool) {
 	showHelp := false
+	showVersion := false
 	useTime := false
 	useTz := false
 	tsRaw := fmt.Sprintf("%d", time.Now().Unix())
@@ -52,6 +68,8 @@ func getParsedArgs() (string, bool, bool, bool) {
 		case "tt":
 			useTime = true
 			useTz = true
+		case "v":
+			showVersion = true
 		case "h":
 			showHelp = true
 		default:
@@ -59,7 +77,7 @@ func getParsedArgs() (string, bool, bool, bool) {
 		}
 	}
 
-	return tsRaw, useTime, useTz, showHelp
+	return tsRaw, useTime, useTz, showHelp, showVersion
 	// return "1653881338"    // s ts
 	// return "1629484202017" // ms ts
 }
@@ -73,6 +91,7 @@ func getHelp() string {
 		"OPTIONS:",
 		fmt.Sprintf("%s-t: Show time (default: false).", tab),
 		fmt.Sprintf("%s    If doubled up, also convert to local and show TZ (default: UTC)", tab),
+		fmt.Sprintf("%s-v: Show version", tab),
 		fmt.Sprintf("%s-h: Show help", tab),
 	}
 
