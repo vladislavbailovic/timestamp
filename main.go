@@ -34,6 +34,7 @@ func main() {
 
 	tsSrc, err := strconv.Atoi(tsRaw)
 	if err != nil {
+		fmt.Printf("ERROR: error parsing [%s]\n", tsRaw)
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -58,7 +59,7 @@ func getParsedArgs() (string, bool, bool, bool, bool) {
 	useTz := false
 	tsRaw := fmt.Sprintf("%d", time.Now().Unix())
 
-	for _, arg := range os.Args {
+	for _, arg := range os.Args[1:] {
 		switch strings.Trim(arg, "-") {
 		case "t":
 			if useTime {
