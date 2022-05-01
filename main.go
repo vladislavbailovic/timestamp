@@ -21,7 +21,7 @@ func getVersion() string {
 }
 
 func main() {
-	tsRaw, useTime, useTz, showHelp, showVersion := getParsedArgs()
+	tsRaw, useTime, useTz, showHelp, showVersion := getParsedArgs(os.Args[1:])
 	if showHelp {
 		fmt.Println(getHelp())
 		os.Exit(0)
@@ -52,14 +52,14 @@ func main() {
 	fmt.Println(ts.Format(format))
 }
 
-func getParsedArgs() (string, bool, bool, bool, bool) {
+func getParsedArgs(args []string) (string, bool, bool, bool, bool) {
 	showHelp := false
 	showVersion := false
 	useTime := false
 	useTz := false
 	tsRaw := fmt.Sprintf("%d", time.Now().Unix())
 
-	for _, arg := range os.Args[1:] {
+	for _, arg := range args {
 		switch strings.Trim(arg, "-") {
 		case "t":
 			if useTime {
@@ -79,8 +79,6 @@ func getParsedArgs() (string, bool, bool, bool, bool) {
 	}
 
 	return tsRaw, useTime, useTz, showHelp, showVersion
-	// return "1653881338"    // s ts
-	// return "1629484202017" // ms ts
 }
 
 func getHelp() string {
